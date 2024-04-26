@@ -1,8 +1,10 @@
 //import modules needed
 const inquirer = require('inquirer');
 const fs = require('fs');
-const {Shapes} = require('./lib/shapes.js');
+const {Triangle, Square, Circle} = require('./lib/shapes.js');
 
+
+//use inquirer to get input from user from cmd line
 inquirer
     .prompt([
         {
@@ -28,19 +30,25 @@ inquirer
         },
     ])
     .then((data) => {
-        console.log(data);
+        //destructuring the data values
         const {name, nameColor, shape, shapeColor} = data;
-       
         
-        const svgStr = `
-        <svg version="1.1" width="300" height="200" xmlns="http://www.w3.org/2000/svg">
-            <${shape} cx="150" cy="100" r="80" fill="${shapeColor}" />
-            <text x="150" y="125" font-size="60" text-anchor="middle" fill="${nameColor}">${name}</text>
-        </svg>
-   
-        `;
+        //creating an empty string var, then checking the shape the user selected, creating a new object of that shape,
+        //and calling the render function to return the SVG string
+        let logoStr = '';
+        if(shape === 'circle'){
+            const logo = new Circle(name, nameColor, shape, shapeColor);
+            logoStr = logo.render();
+        }else if(shape === 'triangle'){
+            const logo = new Triangle(name, nameColor, shape, shapeColor);
+            logoStr = logo.render();
+        }else{
+            const logo = new Square(name, nameColor, shape, shapeColor);
+            logoStr = logo.render();
+        }
         
-    fs.writeFile("./examples/logo.svg", svgStr, function(err){
+    //writing the SVG string to an .svg file
+    fs.writeFile("./examples/logo.svg", logoStr, function(err){
         if(err){
             console.log(err);
         }
